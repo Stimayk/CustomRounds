@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="ru" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CR Config Generator (Fix)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* --- CUSTOM CSS OVERRIDES --- */
+        
+        body {
+            background-color: #0f0f0f; /* Чуть темнее стандарта */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Улучшаем контрастность карточек */
+        .card {
+            border: 1px solid #333;
+            background-color: #1b1b1b;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        
+        .card-header {
+            background-color: #242424;
+            border-bottom: 1px solid #333;
+            padding: 15px;
+        }
+
+        /* Список раундов */
+        .list-group-item {
+            border-color: #333;
+            padding: 12px 15px;
+        }
+        .list-group-item.active {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+            font-weight: 600;
+        }
+        
+        /* Скроллбар для списка */
+        #roundsList {
+            max-height: 55vh;
+            overflow-y: auto;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1b1b1b; }
+        ::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #666; }
+
+        /* Теги оружия */
+        .weapon-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: #242424;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            min-height: 50px;
+        }
+        .weapon-tag { 
+            display: inline-flex; 
+            align-items: center; 
+            background: #333; 
+            padding: 5px 12px; 
+            border-radius: 20px; 
+            font-size: 0.9em;
+            border: 1px solid #555;
+            color: #eee;
+        }
+        .weapon-tag i { 
+            margin-left: 8px; 
+            cursor: pointer; 
+            color: #ff6b6b; 
+        }
+        .weapon-tag i:hover { color: #ff4c4c; }
+
+        /* Улучшение читаемости input-group */
+        .input-group-text {
+            background-color: #333;
+            color: #ccc;
+            border-color: #444;
+        }
+
+        /* Заголовки секций */
+        .section-title { 
+            color: #6ea8fe; 
+            margin-top: 25px; 
+            margin-bottom: 15px; 
+            border-bottom: 1px solid #444; 
+            padding-bottom: 5px; 
+            font-size: 1.1rem;
+        }
+
+        /* JSON Поле */
+        #ioJson {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.8rem;
+            background-color: #000;
+            color: #0f0;
+            border: 1px solid #444;
+        }
+        
+        /* Фикс для длинных лейблов переключателей */
+        .form-check-label {
+            color: #e0e0e0; /* Явный белый цвет текста */
+            line-height: 1.4;
+        }
+        
+        /* Выделение блока с важными переключателями */
+        .danger-zone {
+            background-color: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            border-radius: 6px;
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid py-4" style="max-width: 1500px;">
+    <div class="row">
+        <div class="col-12 text-center mb-4">
+            <h3><i class="fa-solid fa-gear text-primary"></i> Custom Rounds Generator</h3>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- ЛЕВАЯ КОЛОНКА: СПИСОК И JSON -->
+        <div class="col-md-4 col-lg-3">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span class="fw-bold"><i class="fa-solid fa-list"></i> Раунды</span>
+                    <button class="btn btn-sm btn-success" onclick="addNewRound()" title="Добавить раунд"><i class="fa-solid fa-plus"></i></button>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush" id="roundsList">
+                        <!-- JS Generated -->
+                    </div>
+                </div>
+                <div class="card-footer p-3 bg-darker">
+                     <label class="form-label small text-secondary">Конфигурация (JSON):</label>
+                     <textarea id="ioJson" class="form-control mb-2" rows="6"></textarea>
+                     <div class="d-grid gap-2">
+                         <div class="btn-group">
+                             <button class="btn btn-primary btn-sm w-50" onclick="loadConfig()">Загрузить</button>
+                             <button class="btn btn-outline-light btn-sm w-50" onclick="generateConfig()">Обновить</button>
+                         </div>
+                         <button class="btn btn-success btn-sm" onclick="copyToClipboard()"><i class="fa-regular fa-copy"></i> Копировать</button>
+                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ПРАВАЯ КОЛОНКА: РЕДАКТОР -->
+        <div class="col-md-8 col-lg-9">
+            <div id="editorPanel" style="display:none;">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span id="currentRoundTitle" class="text-info fw-bold fs-5">Редактирование</span>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteCurrentRound()"><i class="fa-solid fa-trash"></i> Удалить раунд</button>
+                    </div>
+                    <div class="card-body p-4">
+                        
+                        <!-- ID Раунда -->
+                        <div class="mb-4">
+                            <label class="form-label text-warning">Системное имя (ID)</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-tag"></i></span>
+                                <input type="text" class="form-control" id="roundName" onchange="updateRoundKey()">
+                            </div>
+                            <div class="form-text text-secondary">Используйте английские буквы без пробелов (например: deagle_only).</div>
+                        </div>
+
+                        <!-- Табы -->
+                        <ul class="nav nav-tabs mb-4" id="settingsTabs" role="tablist">
+                            <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-main">Основное</button></li>
+                            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-player">Игрок</button></li>
+                            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-weapons">Оружие</button></li>
+                            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-msgs">Сообщения</button></li>
+                        </ul>
+
+                        <div class="tab-content" id="settingsContent">
+                            
+                            <!-- TAB: MAIN -->
+                            <div class="tab-pane fade show active" id="tab-main">
+                                <h5 class="section-title">Физика и Правила</h5>
+                                <div class="row g-3">
+                                    <div class="col-lg-4">
+                                        <label class="form-label">Патроны</label>
+                                        <select class="form-select" id="ammo">
+                                            <option value="-1">Без изменений (-1)</option>
+                                            <option value="0">Обычные (0)</option>
+                                            <option value="1">Бесконечные (1)</option>
+                                            <option value="2">С перезарядкой (2)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label class="form-label">Гравитация (1.0)</label>
+                                        <input type="number" step="0.1" class="form-control" id="gravity" placeholder="1.0">
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label class="form-label">Скорость (1.0)</label>
+                                        <input type="number" step="0.1" class="form-control" id="speed" placeholder="1.0">
+                                    </div>
+                                </div>
+                                
+                                <h5 class="section-title">Флаги режима</h5>
+                                <div class="row g-3">
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="form-check form-switch p-2 border border-secondary rounded">
+                                            <input class="form-check-input ms-0 me-2" type="checkbox" id="no_buy">
+                                            <label class="form-check-label">Запрет закупки<br><small class="text-secondary">(No Buy)</small></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="form-check form-switch p-2 border border-secondary rounded">
+                                            <input class="form-check-input ms-0 me-2" type="checkbox" id="only_hs">
+                                            <label class="form-check-label">Только в голову<br><small class="text-secondary">(Only HS)</small></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="form-check form-switch p-2 border border-secondary rounded">
+                                            <input class="form-check-input ms-0 me-2" type="checkbox" id="nz">
+                                            <label class="form-check-label">Без прицела<br><small class="text-secondary">(No Zoom)</small></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="form-check form-switch p-2 border border-secondary rounded">
+                                            <input class="form-check-input ms-0 me-2" type="checkbox" id="clear_map">
+                                            <label class="form-check-label">Очистить карту<br><small class="text-secondary">(От оружия)</small></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TAB: PLAYER -->
+                            <div class="tab-pane fade" id="tab-player">
+                                <h5 class="section-title">Характеристики</h5>
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label">HP (Здоровье)</label>
+                                        <input type="number" class="form-control" id="hp" placeholder="100">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Armor (Броня)</label>
+                                        <input type="number" class="form-control" id="armor" placeholder="0">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Невидимость (0-255)</label>
+                                        <input type="number" class="form-control" id="invisibility" placeholder="255">
+                                        <div class="form-text">255 - полностью виден, 0 - невидим</div>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col-md-12">
+                                        <div class="form-check form-switch ps-0">
+                                            <input class="form-check-input ms-0 me-2" type="checkbox" id="helmet" style="width: 2.5em; height: 1.25em;">
+                                            <label class="form-check-label fs-5 align-middle">Выдать шлем</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TAB: WEAPONS -->
+                            <div class="tab-pane fade" id="tab-weapons">
+                                <h5 class="section-title">Очистка инвентаря</h5>
+                                <!-- ИСПРАВЛЕНИЕ: Используем col-12 для вертикального расположения на любых экранах -->
+                                <div class="row g-3 mb-4">
+                                    <div class="col-12">
+                                        <div class="danger-zone d-flex align-items-center">
+                                            <div class="form-check form-switch w-100 ps-0">
+                                                <input class="form-check-input ms-0 me-3" type="checkbox" id="no_weapon" style="width: 3em; height: 1.5em;">
+                                                <label class="form-check-label fs-5 text-danger fw-bold">Забрать всё оружие (No Weapon)</label>
+                                                <div class="text-secondary mt-1">Игрок появится с пустыми руками</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="danger-zone d-flex align-items-center">
+                                            <div class="form-check form-switch w-100 ps-0">
+                                                <input class="form-check-input ms-0 me-3" type="checkbox" id="no_knife" style="width: 3em; height: 1.5em;">
+                                                <label class="form-check-label fs-5 text-danger fw-bold">Забрать нож (No Knife)</label>
+                                                <div class="text-secondary mt-1">Если включено, нож будет удален</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h5 class="section-title">Выдача оружия</h5>
+                                <div class="input-group mb-3">
+                                    <select class="form-select" id="weaponSelector">
+                                        <option value="" selected disabled>Выберите оружие...</option>
+                                        <optgroup label="Pistols">
+                                            <option value="weapon_glock">Glock</option>
+                                            <option value="weapon_hkp2000">P2000</option>
+                                            <option value="weapon_usp_silencer">USP-S</option>
+                                            <option value="weapon_elite">Dual Berettas</option>
+                                            <option value="weapon_p250">P250</option>
+                                            <option value="weapon_fiveseven">Five-SeveN</option>
+                                            <option value="weapon_cz75a">CZ75-Auto</option>
+                                            <option value="weapon_tec9">Tec-9</option>
+                                            <option value="weapon_revolver">R8 Revolver</option>
+                                            <option value="weapon_deagle">Desert Eagle</option>
+                                        </optgroup>
+                                        <optgroup label="Heavy">
+                                            <option value="weapon_nova">Nova</option>
+                                            <option value="weapon_xm1014">XM1014</option>
+                                            <option value="weapon_sawedoff">Sawed-Off</option>
+                                            <option value="weapon_mag7">MAG-7</option>
+                                            <option value="weapon_m249">M249</option>
+                                            <option value="weapon_negev">Negev</option>
+                                        </optgroup>
+                                        <optgroup label="SMGs">
+                                            <option value="weapon_mac10">MAC-10</option>
+                                            <option value="weapon_mp9">MP9</option>
+                                            <option value="weapon_mp7">MP7</option>
+                                            <option value="weapon_mp5sd">MP5-SD</option>
+                                            <option value="weapon_ump45">UMP-45</option>
+                                            <option value="weapon_p90">P90</option>
+                                            <option value="weapon_bizon">PP-Bizon</option>
+                                        </optgroup>
+                                        <optgroup label="Rifles">
+                                            <option value="weapon_galilar">Galil AR</option>
+                                            <option value="weapon_famas">FAMAS</option>
+                                            <option value="weapon_ak47">AK-47</option>
+                                            <option value="weapon_m4a1">M4A4</option>
+                                            <option value="weapon_m4a1_silencer">M4A1-S</option>
+                                            <option value="weapon_ssg08">SSG 08</option>
+                                            <option value="weapon_sg556">SG 553</option>
+                                            <option value="weapon_aug">AUG</option>
+                                            <option value="weapon_awp">AWP</option>
+                                            <option value="weapon_g3sg1">G3SG1</option>
+                                            <option value="weapon_scar20">SCAR-20</option>
+                                        </optgroup>
+                                        <optgroup label="Grenades/Gear">
+                                            <option value="weapon_hegrenade">HE Grenade</option>
+                                            <option value="weapon_flashbang">Flashbang</option>
+                                            <option value="weapon_smokegrenade">Smoke</option>
+                                            <option value="weapon_molotov">Molotov</option>
+                                            <option value="weapon_incgrenade">Incendiary</option>
+                                            <option value="weapon_decoy">Decoy</option>
+                                            <option value="item_defuser">Defuse Kit</option>
+                                            <option value="item_cutters">Zeus x27</option>
+                                            <option value="weapon_taser">Zeus</option>
+                                            <option value="weapon_knife">Knife</option>
+                                        </optgroup>
+                                    </select>
+                                    <button class="btn btn-primary" onclick="addWeapon()"><i class="fa-solid fa-plus"></i> Добавить</button>
+                                </div>
+                                <div id="weaponListContainer" class="weapon-container">
+                                    <span class="text-muted small ms-2">Список пуст</span>
+                                </div>
+                            </div>
+
+                            <!-- TAB: MESSAGES & COMMANDS -->
+                            <div class="tab-pane fade" id="tab-msgs">
+                                <h5 class="section-title">Чат (Message)</h5>
+                                <div class="mb-3">
+                                    <label class="form-label">Сообщение при старте</label>
+                                    <input type="text" class="form-control" id="message_start" placeholder="Пример: Битва на ножах!">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Сообщение в конце</label>
+                                    <input type="text" class="form-control" id="message_end">
+                                </div>
+
+                                <h5 class="section-title">Консольные команды (Server CMD)</h5>
+                                <div class="mb-3">
+                                    <label class="form-label">Выполнить при старте (cmd)</label>
+                                    <input type="text" class="form-control" id="cmd" placeholder="sv_gravity 500; say Hello">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Выполнить в конце (cmd_end)</label>
+                                    <input type="text" class="form-control" id="cmd_end" placeholder="sv_gravity 800">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Welcome Screen -->
+            <div id="welcomePanel" class="text-center mt-5 text-secondary">
+                <div class="display-1 mb-3"><i class="fa-solid fa-arrow-left-long"></i></div>
+                <h4>Выберите раунд из списка слева</h4>
+                <p>Или нажмите зеленую кнопку <strong>+</strong> чтобы создать новый</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // --- Logic ---
+    let config = { "Rounds": {} };
+    
+    const exampleConfig = {
+        "Rounds": {
+            "KnifeRound": {
+                "hp": 35,
+                "no_weapon": true,
+                "no_knife": false,
+                "gravity": 0.8,
+                "message_start": "Knife Round Started!"
+            },
+            "DeagleOnly": {
+                "no_buy": true,
+                "only_hs": true,
+                "no_weapon": true,
+                "Weapons": {
+                    "weapon_deagle": ""
+                },
+                "message_start": "Deagle Only HS"
+            }
+        }
+    };
+
+    let currentRoundKey = null;
+
+    function init() {
+        config = JSON.parse(JSON.stringify(exampleConfig));
+        renderRoundList();
+    }
+
+    // --- RENDER SIDEBAR ---
+    function renderRoundList() {
+        const list = document.getElementById('roundsList');
+        list.innerHTML = '';
+        
+        Object.keys(config.Rounds).forEach(key => {
+            const item = document.createElement('div');
+            item.className = `list-group-item list-group-item-action border-0 ${key === currentRoundKey ? 'active' : ''}`;
+            item.innerHTML = `<i class="fa-solid fa-gamepad me-2"></i> ${key}`;
+            item.onclick = () => selectRound(key);
+            list.appendChild(item);
+        });
+    }
+
+    // --- SELECTION ---
+    function selectRound(key) {
+        if(currentRoundKey) saveCurrentStateToMemory();
+        
+        currentRoundKey = key;
+        document.getElementById('welcomePanel').style.display = 'none';
+        document.getElementById('editorPanel').style.display = 'block';
+        document.getElementById('currentRoundTitle').textContent = `Редактирование: ${key}`;
+        
+        renderRoundList();
+        populateForm(key);
+    }
+
+    // --- ACTIONS ---
+    function addNewRound() {
+        let name = "new_round";
+        let counter = 1;
+        while(config.Rounds[name]) {
+            name = "new_round_" + counter++;
+        }
+        
+        config.Rounds[name] = {
+            ammo: -1,
+            hp: 100,
+            armor: 0,
+            gravity: 1.0,
+            speed: 1.0
+        };
+        
+        selectRound(name);
+    }
+
+    function deleteCurrentRound() {
+        if(!currentRoundKey) return;
+        if(confirm(`Удалить раунд "${currentRoundKey}"?`)) {
+            delete config.Rounds[currentRoundKey];
+            currentRoundKey = null;
+            document.getElementById('editorPanel').style.display = 'none';
+            document.getElementById('welcomePanel').style.display = 'block';
+            renderRoundList();
+            generateConfig(); 
+        }
+    }
+
+    function updateRoundKey() {
+        const newName = document.getElementById('roundName').value.trim();
+        if(!newName || newName === currentRoundKey) return;
+        
+        if(config.Rounds[newName]) {
+            alert("Имя уже занято!");
+            document.getElementById('roundName').value = currentRoundKey;
+            return;
+        }
+
+        const data = config.Rounds[currentRoundKey];
+        delete config.Rounds[currentRoundKey];
+        config.Rounds[newName] = data;
+        
+        currentRoundKey = newName;
+        document.getElementById('currentRoundTitle').textContent = `Редактирование: ${newName}`;
+        renderRoundList();
+        generateConfig();
+    }
+
+    // --- FIELDS MAP ---
+    const fields = [
+        { id: 'ammo', type: 'int', default: -1 },
+        { id: 'gravity', type: 'float', default: 1.0 },
+        { id: 'speed', type: 'float', default: 1.0 },
+        { id: 'invisibility', type: 'int', default: 255 },
+        { id: 'hp', type: 'int', default: 100 },
+        { id: 'armor', type: 'int', default: 0 },
+        { id: 'helmet', type: 'bool', default: false },
+        { id: 'no_buy', type: 'bool', default: false },
+        { id: 'only_hs', type: 'bool', default: false },
+        { id: 'nz', type: 'bool', default: false },
+        { id: 'clear_map', type: 'bool', default: false },
+        { id: 'no_weapon', type: 'bool', default: false },
+        { id: 'no_knife', type: 'bool', default: false },
+        { id: 'message_start', type: 'string', default: '' },
+        { id: 'message_end', type: 'string', default: '' },
+        { id: 'cmd', type: 'string', default: '' },
+        { id: 'cmd_end', type: 'string', default: '' }
+    ];
+
+    function populateForm(key) {
+        const data = config.Rounds[key];
+        document.getElementById('roundName').value = key;
+
+        fields.forEach(f => {
+            const el = document.getElementById(f.id);
+            let val = data[f.id] !== undefined ? data[f.id] : f.default;
+            
+            if(f.type === 'bool') {
+                el.checked = (val === 1 || val === '1' || val === true || val === 'true');
+            } else {
+                el.value = val;
+            }
+            // Auto save
+            el.onchange = saveCurrentStateToMemory;
+        });
+
+        renderWeaponTags(data.Weapons || {});
+    }
+
+    function saveCurrentStateToMemory() {
+        if(!currentRoundKey || !config.Rounds[currentRoundKey]) return;
+        
+        const data = config.Rounds[currentRoundKey];
+        
+        fields.forEach(f => {
+            const el = document.getElementById(f.id);
+            if(f.type === 'bool') {
+                if(el.checked) data[f.id] = true;
+                else delete data[f.id];
+            } else if (f.type === 'int') {
+                const val = parseInt(el.value);
+                if(!isNaN(val) && val !== f.default) data[f.id] = val;
+                else delete data[f.id];
+            } else if (f.type === 'float') {
+                const val = parseFloat(el.value);
+                if(!isNaN(val) && val !== f.default) data[f.id] = val;
+                else delete data[f.id];
+            } else {
+                if(el.value) data[f.id] = el.value;
+                else delete data[f.id];
+            }
+        });
+        
+        generateConfig();
+    }
+
+    // --- WEAPONS ---
+    function renderWeaponTags(weaponsObj) {
+        const container = document.getElementById('weaponListContainer');
+        container.innerHTML = '';
+        
+        const keys = Object.keys(weaponsObj);
+        if(keys.length === 0) {
+            container.innerHTML = '<span class="text-muted small ms-2">Нет оружия</span>';
+            return;
+        }
+
+        keys.forEach(w => {
+            const tag = document.createElement('div');
+            tag.className = 'weapon-tag';
+            tag.innerHTML = `${w} <i class="fa-solid fa-xmark" onclick="removeWeapon('${w}')"></i>`;
+            container.appendChild(tag);
+        });
+    }
+
+    function addWeapon() {
+        const selector = document.getElementById('weaponSelector');
+        const val = selector.value;
+        if(!val) return;
+
+        if(!config.Rounds[currentRoundKey].Weapons) {
+            config.Rounds[currentRoundKey].Weapons = {};
+        }
+        config.Rounds[currentRoundKey].Weapons[val] = "";
+        
+        renderWeaponTags(config.Rounds[currentRoundKey].Weapons);
+        selector.value = "";
+        generateConfig();
+    }
+
+    window.removeWeapon = function(name) {
+        if(config.Rounds[currentRoundKey].Weapons) {
+            delete config.Rounds[currentRoundKey].Weapons[name];
+            if(Object.keys(config.Rounds[currentRoundKey].Weapons).length === 0) {
+                delete config.Rounds[currentRoundKey].Weapons;
+            }
+            renderWeaponTags(config.Rounds[currentRoundKey].Weapons || {});
+            generateConfig();
+        }
+    };
+
+    // --- IO ---
+    function generateConfig() {
+        const json = JSON.stringify(config, null, 4);
+        document.getElementById('ioJson').value = json;
+    }
+
+    function loadConfig() {
+        try {
+            const raw = document.getElementById('ioJson').value;
+            if(!raw) return;
+            const parsed = JSON.parse(raw);
+            if(!parsed.Rounds) {
+                alert("Нет объекта 'Rounds'!");
+                return;
+            }
+            config = parsed;
+            currentRoundKey = null;
+            document.getElementById('editorPanel').style.display = 'none';
+            document.getElementById('welcomePanel').style.display = 'block';
+            renderRoundList();
+            alert("Загружено!");
+        } catch(e) {
+            alert("Ошибка JSON: " + e.message);
+        }
+    }
+
+    function copyToClipboard() {
+        generateConfig();
+        const copyText = document.getElementById("ioJson");
+        copyText.select();
+        document.execCommand("copy");
+    }
+
+    init();
+</script>
+</body>
+</html>

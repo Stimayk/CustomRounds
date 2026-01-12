@@ -1,0 +1,142 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\Stimayk.DESKTOP-1HFB3FI\\Documents\\CustomRoundsNoZoom\\CustomRoundsNoZoom\\CustomRoundsNoZoom.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\Stimayk.DESKTOP-1HFB3FI\\Documents\\CustomRoundsNoZoom\\CustomRoundsNoZoom\\CustomRoundsNoZoom.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Stimayk.DESKTOP-1HFB3FI\\Documents\\CustomRoundsNoZoom\\CustomRoundsNoZoom\\CustomRoundsNoZoom.csproj",
+        "projectName": "CustomRoundsNoZoom",
+        "projectPath": "C:\\Users\\Stimayk.DESKTOP-1HFB3FI\\Documents\\CustomRoundsNoZoom\\CustomRoundsNoZoom\\CustomRoundsNoZoom.csproj",
+        "packagesPath": "C:\\Users\\Stimayk.DESKTOP-1HFB3FI\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Stimayk.DESKTOP-1HFB3FI\\Documents\\CustomRoundsNoZoom\\CustomRoundsNoZoom\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Stimayk.DESKTOP-1HFB3FI\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\Stimayk.DESKTOP-1HFB3FI\\Documents\\ICustomRoundsApi\\ICustomRoundsApi.csproj": {
+                "projectPath": "C:\\Users\\Stimayk.DESKTOP-1HFB3FI\\Documents\\ICustomRoundsApi\\ICustomRoundsApi.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "CounterStrikeSharp.API": {
+              "target": "Package",
+              "version": "[*, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Stimayk.DESKTOP-1HFB3FI\\Documents\\ICustomRoundsApi\\ICustomRoundsApi.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Stimayk.DESKTOP-1HFB3FI\\Documents\\ICustomRoundsApi\\ICustomRoundsApi.csproj",
+        "projectName": "ICustomRoundsApi",
+        "projectPath": "C:\\Users\\Stimayk.DESKTOP-1HFB3FI\\Documents\\ICustomRoundsApi\\ICustomRoundsApi.csproj",
+        "packagesPath": "C:\\Users\\Stimayk.DESKTOP-1HFB3FI\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Stimayk.DESKTOP-1HFB3FI\\Documents\\ICustomRoundsApi\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Stimayk.DESKTOP-1HFB3FI\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "CounterStrikeSharp.API": {
+              "target": "Package",
+              "version": "[*, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

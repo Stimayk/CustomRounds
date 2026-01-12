@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomRoundsWeapons", "CustomRoundsWeapons.csproj", "{33EA2CD4-2C4E-439C-9DD7-A06AD2E14F34}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{33EA2CD4-2C4E-439C-9DD7-A06AD2E14F34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33EA2CD4-2C4E-439C-9DD7-A06AD2E14F34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33EA2CD4-2C4E-439C-9DD7-A06AD2E14F34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33EA2CD4-2C4E-439C-9DD7-A06AD2E14F34}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,74 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomRoundsCore", "CustomRoundsCore.csproj", "{4A5F56AF-4E70-40C2-AEE9-C94B270B1D40}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICustomRoundsApi", "..\ICustomRoundsApi\ICustomRoundsApi.csproj", "{E3CE9A56-8576-4157-BA0C-846F0C1559E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomRoundsMisc", "..\CustomRoundsMisc\CustomRoundsMisc.csproj", "{35F22474-8516-4642-8A7B-E9C3ADEAC0B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomRoundsIks", "..\CustomRoundsIks\CustomRoundsIks.csproj", "{0B231136-9B14-4485-80B1-09D33A0BFE0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomRoundsNoZoom", "..\CustomRoundsNoZoom\CustomRoundsNoZoom\CustomRoundsNoZoom.csproj", "{827547DA-2884-4135-8F48-8BBE2CD201C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomRoundsSC", "..\CustomRoundsSC\CustomRoundsSC\CustomRoundsSC.csproj", "{E47AFD15-8856-4780-9041-10370BC35281}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomRoundsNoBuy", "..\CustomRoundsNoBuy\CustomRoundsNoBuy\CustomRoundsNoBuy.csproj", "{D62DD668-237E-41AB-AEEB-F7A3C0183990}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomRoundsAmmo", "..\CustomRoundsAmmo\CustomRoundsAmmo.csproj", "{21A03BEA-49DE-4E1D-A269-74C334B0FE34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomRoundsAutostart", "..\CustomRoundsAutostart\CustomRoundsAutostart.csproj", "{CA345079-9FB2-423E-9E15-342C5D7B3F80}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomRoundsChat", "..\CustomRoundsChat\CustomRoundsChat.csproj", "{DDF1F474-FA90-4E10-82DA-0AD34192FB61}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomRoundsIntervals", "..\CustomRoundsIntervals\CustomRoundsIntervals.csproj", "{0F7B7C45-A285-410A-A369-349BB141AAA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomRoundsMessages", "..\CustomRoundsMessages\CustomRoundsMessages.csproj", "{71C45B86-C379-47BC-A6EE-907350B9CB29}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomRoundsOnlyHs", "..\CustomRoundsOnlyHs\CustomRoundsOnlyHs.csproj", "{75803B74-10F7-4BB2-8DA3-AE4185687BF6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomRoundsWeapons", "..\CustomRoundsWeapons\CustomRoundsWeapons.csproj", "{33EA2CD4-2C4E-439C-9DD7-A06AD2E14F34}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4A5F56AF-4E70-40C2-AEE9-C94B270B1D40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A5F56AF-4E70-40C2-AEE9-C94B270B1D40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A5F56AF-4E70-40C2-AEE9-C94B270B1D40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A5F56AF-4E70-40C2-AEE9-C94B270B1D40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3CE9A56-8576-4157-BA0C-846F0C1559E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3CE9A56-8576-4157-BA0C-846F0C1559E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3CE9A56-8576-4157-BA0C-846F0C1559E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3CE9A56-8576-4157-BA0C-846F0C1559E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35F22474-8516-4642-8A7B-E9C3ADEAC0B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35F22474-8516-4642-8A7B-E9C3ADEAC0B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35F22474-8516-4642-8A7B-E9C3ADEAC0B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35F22474-8516-4642-8A7B-E9C3ADEAC0B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B231136-9B14-4485-80B1-09D33A0BFE0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B231136-9B14-4485-80B1-09D33A0BFE0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B231136-9B14-4485-80B1-09D33A0BFE0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B231136-9B14-4485-80B1-09D33A0BFE0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{827547DA-2884-4135-8F48-8BBE2CD201C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{827547DA-2884-4135-8F48-8BBE2CD201C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E47AFD15-8856-4780-9041-10370BC35281}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E47AFD15-8856-4780-9041-10370BC35281}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D62DD668-237E-41AB-AEEB-F7A3C0183990}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D62DD668-237E-41AB-AEEB-F7A3C0183990}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21A03BEA-49DE-4E1D-A269-74C334B0FE34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21A03BEA-49DE-4E1D-A269-74C334B0FE34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA345079-9FB2-423E-9E15-342C5D7B3F80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA345079-9FB2-423E-9E15-342C5D7B3F80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDF1F474-FA90-4E10-82DA-0AD34192FB61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDF1F474-FA90-4E10-82DA-0AD34192FB61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F7B7C45-A285-410A-A369-349BB141AAA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F7B7C45-A285-410A-A369-349BB141AAA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71C45B86-C379-47BC-A6EE-907350B9CB29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71C45B86-C379-47BC-A6EE-907350B9CB29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75803B74-10F7-4BB2-8DA3-AE4185687BF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75803B74-10F7-4BB2-8DA3-AE4185687BF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33EA2CD4-2C4E-439C-9DD7-A06AD2E14F34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33EA2CD4-2C4E-439C-9DD7-A06AD2E14F34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+EndGlobal
