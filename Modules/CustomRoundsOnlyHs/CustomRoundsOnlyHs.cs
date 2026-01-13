@@ -17,7 +17,6 @@ public class CustomRoundsOnlyHs : BasePlugin
     public override string ModuleVersion => "v1.1.0";
 
     private ConVar? _cvar;
-    private static int _default = -1;
 
     public override void OnAllPluginsLoaded(bool hotReload)
     {
@@ -42,16 +41,13 @@ public class CustomRoundsOnlyHs : BasePlugin
     private void OnCustomRoundStart(string name, Dictionary<string, object> settings)
     {
         if (!TryGetBool(settings, "only_hs", out var mode)) return;
-        _default = _cvar?.GetPrimitiveValue<int>() ?? 0;
         _cvar?.SetValue(mode);
     }
     
     private void OnCustomRoundEnd(string name, Dictionary<string, object> settings)
     {
-        if (!TryGetBool(settings, "only_hs", out var mode)) return;
-        if (_default == -1) return;
-        _cvar?.SetValue(_default);
-        _default = -1;
+        if (!TryGetBool(settings, "only_hs", out var _)) return;
+        _cvar?.SetValue(false);
     }
 
     private static bool TryGetBool(Dictionary<string, object> settings, string key, out bool result)
