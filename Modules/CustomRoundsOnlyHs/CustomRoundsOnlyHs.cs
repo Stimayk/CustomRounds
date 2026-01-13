@@ -2,6 +2,7 @@ using System.Text.Json;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Capabilities;
+using CounterStrikeSharp.API.Modules.Cvars;
 using CustomRoundsCore;
 
 namespace CustomRoundsOnlyHs;
@@ -10,11 +11,13 @@ public class CustomRoundsOnlyHs : BasePlugin
 {
     private readonly PluginCapability<ICustomRoundsApi?> _pluginCapability = new("cr:core");
     private ICustomRoundsApi? _api;
-    private bool _onlyhs;
     public override string ModuleName => "[CR] Only HS";
     public override string ModuleDescription => "";
     public override string ModuleAuthor => "E!N";
-    public override string ModuleVersion => "v1.0.0";
+    public override string ModuleVersion => "v1.1.0";
+
+    private ConVar? _cvar;
+    private static int _default = -1;
 
     public override void OnAllPluginsLoaded(bool hotReload)
     {
@@ -22,59 +25,33 @@ public class CustomRoundsOnlyHs : BasePlugin
         if (_api is null)
             return;
 
-        RegisterEventHandler<EventRoundStart>(OnRoundStart);
-        RegisterEventHandler<EventPlayerHurt>(OnPlayerHurt);
-        _api.OnCustomRoundEnd += (_, _) => _onlyhs = false;
+        _cvar = ConVar.Find("mp_damage_headshot_only");
+        
+        _api.OnCustomRoundStart += OnCustomRoundStart;
+        _api.OnCustomRoundEnd += OnCustomRoundEnd;
     }
 
     public override void Unload(bool hotReload)
     {
-        DeregisterEventHandler<EventRoundStart>(OnRoundStart);
-        DeregisterEventHandler<EventPlayerHurt>(OnPlayerHurt);
+        if (_api is null)
+            return;
+        _api.OnCustomRoundStart -= OnCustomRoundStart;
+        _api.OnCustomRoundEnd -= OnCustomRoundEnd;
     }
 
-    private HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
+    private void OnCustomRoundStart(string name, Dictionary<string, object> settings)
     {
-        if (_api is
-            not
-            {
-                IsCustomRound: true
-            }) return HookResult.Continue;
-
-        var settings = _api.GetCurrentRoundSettings();
-        if (settings is null) return HookResult.Continue;
-
-        if (TryGetBool(settings, "only_hs", out var mode))
-        {
-            _onlyhs = mode;
-        }
-
-        return HookResult.Continue;
+        if (!TryGetBool(settings, "only_hs", out var mode)) return;
+        _default = _cvar?.GetPrimitiveValue<int>() ?? 0;
+        _cvar?.SetValue(mode);
     }
-
-    private HookResult OnPlayerHurt(EventPlayerHurt @event, GameEventInfo info)
+    
+    private void OnCustomRoundEnd(string name, Dictionary<string, object> settings)
     {
-        if (!_onlyhs) return HookResult.Continue;
-        var victim = @event.Userid;
-        var damage = @event.DmgHealth;
-        var hitgroup = (HitGroup_t)@event.Hitgroup;
-
-        if (hitgroup != HitGroup_t.HITGROUP_HEAD)
-            RestoreHealth(victim!, damage);
-        return HookResult.Continue;
-    }
-
-    private static void RestoreHealth(CCSPlayerController victim, float damage)
-    {
-        var playerPawn = victim.PlayerPawn.Value;
-        if (playerPawn == null || !playerPawn.IsValid) return;
-        var newHealth = playerPawn.Health + damage;
-
-        if (newHealth > 100)
-            newHealth = 100;
-
-        playerPawn.Health = (int)newHealth;
-        Utilities.SetStateChanged(playerPawn, "CBaseEntity", "m_iHealth");
+        if (!TryGetBool(settings, "only_hs", out var mode)) return;
+        if (_default == -1) return;
+        _cvar?.SetValue(_default);
+        _default = -1;
     }
 
     private static bool TryGetBool(Dictionary<string, object> settings, string key, out bool result)

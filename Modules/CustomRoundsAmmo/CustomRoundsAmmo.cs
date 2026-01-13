@@ -49,7 +49,7 @@ public class CustomRoundsAmmo : BasePlugin
     {
         if (!TryGetInt(settings, "ammo", out _)) return;
         if (_default == -1) return;
-        _cvar?.SetValue(0);
+        _cvar?.SetValue(_default);
         _default = -1;
     }
 
